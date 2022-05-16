@@ -83,8 +83,6 @@ router.get(
             return next(createError(404, 'game not found in user\'s library'));
         }
 
-        console.log(req.matchedData.minutes);
-
         const game = request.data.response.games[0];
         const playtime = req.matchedData.minutes === '1'
             ? game.playtime_forever
