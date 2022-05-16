@@ -1,0 +1,28 @@
+{
+  "name": "ttvcapi",
+  "version": "1.0.0",
+  "description": "An app containing random API endpoints to be used with Twitch bots like Nightbot or Fossabot",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Piggered/ttvcapi.git"
+  },
+  "author": "Piggered",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Piggered/ttvcapi/issues"
+  },
+  "homepage": "https://github.com/Piggered/ttvcapi#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-validator": "^6.14.0",
+    "status-codes": "^0.0.1"
+  }
+}
