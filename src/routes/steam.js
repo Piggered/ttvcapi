@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Router } from 'express';
-import { param } from 'express-validator';
+import { param, query } from 'express-validator';
 
 import { createError } from '../errors.js';
 import validator from '../validator.js';
@@ -18,7 +18,7 @@ router.get(
         param('appId')
             .isInt({ min: 0 }).withMessage('invalid appId format'),
         param('stat')
-            .isString()
+            .isString(),
     ],
     validator,
 
@@ -34,7 +34,7 @@ router.get(
         });
 
         if (request.status !== 200) {
-            return next(createError(400, 'Steam Web API responded with 200 status code'));
+            return next(createError(400, 'Steam Web API responded with non 200 status code'));
         }
 
         const stats = request.data.playerstats.stats;
@@ -45,6 +45,52 @@ router.get(
         }
 
         res.send(stat.value.toString());
+    }
+);
+
+router.get(
+    '/user/:steamId/app/:appId/playtime',
+    [
+        param('steamId')
+            .isInt({ min: 0 }).withMessage('invalid steamId format'),
+        param('appId')
+            .isInt({ min: 0 }).withMessage('invalid appId format'),
+        query('round')
+            .isInt({ min: 0, max: 5 }).optional().withMessage('invalid round format'),
+        query('minutes')
+            .isInt({ min: 0, max: 1 }).optional().withMessage('invalid minutes format'),
+    ],
+    validator,
+
+    async (req, res, next) => {
+        const { steamId, appId } = req.matchedData;
+
+        const request = await axios.get(`${STEAM_API_URL}/IPlayerService/GetOwnedGames/v1`, {
+            params: {
+                key: STEAM_API_KEY,
+                'appids_filter[0]': appId,
+                include_appinfo: 0,
+                include_played_free_games: 1,
+                steamid: steamId
+            }
+        });
+
+        if (request.status !== 200) {
+            return next(createError(400, 'Steam Web API responded with non 200 status code'));
+        }
+
+        if (request.data.response.game_count === 0) {
+            return next(createError(404, 'game not found in user\'s library'));
+        }
+
+        console.log(req.matchedData.minutes);
+
+        const game = request.data.response.games[0];
+        const playtime = req.matchedData.minutes === '1'
+            ? game.playtime_forever
+            : game.playtime_forever / 60;
+
+        res.send(playtime.toFixed(req.matchedData.round ?? 0));
     }
 );
 
