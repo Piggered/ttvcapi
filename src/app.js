@@ -20,17 +20,14 @@ app.use((req, res, next) => {
 
 // dynamically load all routes in the directory
 const routesDir = path.join(__dirname, 'routes');
-const routeFiles = recursiveReaddirSync(routesDir);
+const routeFiles = recursiveReaddirSync(routesDir).filter(file => file.endsWith('.route.js'));
 
 // do NOT use async forEach, otherwise it'll mess up the order of middlewares due to awaiting for dynamic imports
 for (const file of routeFiles) {
     const { default: router } = await import(file);
     let basePath = `/${path.relative(routesDir, file)}`;
 
-    // remove the file extension
-    if (basePath.includes('.')) {
-        basePath = basePath.substring(0, basePath.lastIndexOf('.'));
-    }
+    basePath = basePath.substring(0, basePath.lastIndexOf('.route.js'));
 
     app.use(basePath, router);
 }
