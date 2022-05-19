@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import recursiveReaddirSync from 'recursive-readdir-sync';
 
-import { errorsMiddleware, notFoundMiddleware } from './middlewares.js';
+import { errorsMiddleware, notFoundMiddleware } from '#src/middlewares';
 
 // this is fucking stupid, thanks ES modules
 const __filename = fileURLToPath(import.meta.url);

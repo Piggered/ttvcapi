@@ -2,8 +2,8 @@ import axios from 'axios';
 import { Router } from 'express';
 import { param, query } from 'express-validator';
 
-import { createError } from '../errors.js';
-import { authorizationMiddleware, validationMiddleware } from '../middlewares.js';
+import { createError } from '#src/errors';
+import { authorizationMiddleware, validationMiddleware } from '#src/middlewares';
 
 const { STEAM_API_KEY } = process.env;
 const STEAM_API_URL = 'https://api.steampowered.com';

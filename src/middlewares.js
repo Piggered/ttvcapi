@@ -1,7 +1,7 @@
 import { matchedData, validationResult } from 'express-validator';
 
-import { getKeyStatus, hasAccess, KeyStatus } from './authorization.js';
-import { createError } from './errors.js';
+import { getKeyStatus, hasAccess, KeyStatus } from '#src/authorization';
+import { createError } from '#src/errors';
 
 export function authorizationMiddleware(req, res, next) {
     const key = req.query.key;
