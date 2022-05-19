@@ -11,7 +11,7 @@ const STEAM_API_URL = 'https://api.steampowered.com';
 const router = Router();
 
 router.get(
-    '/user/:steamId/app/:appId/stat/:stat',
+    '/stat/:steamId/:appId/:stat',
 
     authorizationMiddleware,
     [
@@ -51,7 +51,7 @@ router.get(
 );
 
 router.get(
-    '/user/:steamId/app/:appId/playtime',
+    '/playtime/:steamId/:appId',
 
     authorizationMiddleware,
     [
