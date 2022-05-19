@@ -63,11 +63,13 @@ router.get(
             .isInt({ min: 0, max: 5 }).optional().withMessage('invalid round format'),
         query('minutes')
             .isInt({ min: 0, max: 1 }).optional().withMessage('invalid minutes format'),
+        query('recent')
+            .isInt({ min: 0, max: 1 }).optional().withMessage('invalid recent format'),
     ],
     validationMiddleware,
 
     async (req, res, next) => {
-        const { steamId, appId } = req.matchedData;
+        const { steamId, appId, round, minutes, recent } = req.matchedData;
 
         const request = await axios.get(`${STEAM_API_URL}/IPlayerService/GetOwnedGames/v1`, {
             params: {
@@ -88,11 +90,10 @@ router.get(
         }
 
         const game = request.data.response.games[0];
-        const playtime = req.matchedData.minutes === '1'
-            ? game.playtime_forever
-            : game.playtime_forever / 60;
+        const rawPlaytime = recent === '1' ? game.playtime_2weeks : game.playtime_forever;
+        const playtime = minutes === '1' ? rawPlaytime : rawPlaytime / 60;
 
-        res.send(playtime.toFixed(req.matchedData.round ?? 0));
+        res.send(playtime.toFixed(round ?? 0));
     }
 );
 
