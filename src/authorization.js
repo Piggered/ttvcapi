@@ -12,27 +12,32 @@ export const KeyStatus = {
 }
 
 export function hasAccess(key, endpoint) {
-    const type = getKeyStatus(key);
+    const status = getKeyStatus(key);
 
-    let keyData;
+    let keyInfo;
 
-    if (type === KeyStatus.NotProvided) {
-        keyData = authData.default;
-    } else if (type === KeyStatus.Valid) {
-        keyData = authData.keys[key];
-    } else {
-        return false;
+    switch (status) {
+        case KeyStatus.NotProvided:
+            keyInfo = authData.default;
+            break;
+
+        case KeyStatus.Invalid:
+            return false;
+
+        case KeyStatus.Valid:
+            keyInfo = authData.keys[key];
+            break;
     }
 
-    const list = keyData['endpoints_list'];
+    const list = keyInfo['endpoints_list'];
 
     if (micromatch.isMatch(endpoint, list)) {
         // returns true if routes list is whitelist, otherwise returns false
-        return keyData.whitelist;
+        return keyInfo.whitelist;
     }
 
     // same as above, but opposite behaviour
-    return !keyData.whitelist;
+    return !keyInfo.whitelist;
 }
 
 export function getKeyStatus(key) {
