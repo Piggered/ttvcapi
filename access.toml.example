@@ -1,0 +1,16 @@
+# authorization for calls without API key
+[default]
+# set whether endpoints_list is a whitelist or a blacklist
+whitelist = true
+# whitelist or blacklist of endpoints
+# you can use glob patterns with micromatch
+endpoints_list = [
+    "/example/:param/**",
+    "/ex?mple/endpoint/*"
+]
+
+# authorization for calls with an API key
+# API_KEY_HERE can be of any format, as long as TOML recognizes it as an object key
+[keys.API_KEY_HERE]
+whitelist = true
+endpoints_list = []

@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { errorsMiddleware } from './errors.js';
+import { errorsMiddleware, notFoundMiddleware } from './middlewares.js';
 
 import steam from './routes/steam.js';
 
@@ -14,6 +14,7 @@ app.use((req, res, next) => {
 
 app.use('/steam', steam);
 
-app.use('*', errorsMiddleware);
+app.use(errorsMiddleware);
+app.use(notFoundMiddleware);
 
 export default app;

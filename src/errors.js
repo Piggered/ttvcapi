@@ -8,9 +8,3 @@ export function createError(statusCode, message) {
         message
     }
 }
-
-export function errorsMiddleware(err, req, res, next) {
-    if (err.isHttpError) {
-        res.status(err.statusCode).send(`[${err.statusCode} ${err.statusName}: ${err.message}]`);
-    }
-}

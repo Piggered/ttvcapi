@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { param, query } from 'express-validator';
 
 import { createError } from '../errors.js';
-import validator from '../validator.js';
+import { authorizationMiddleware, validationMiddleware } from '../middlewares.js';
 
 const { STEAM_API_KEY } = process.env;
 const STEAM_API_URL = 'https://api.steampowered.com';
@@ -12,6 +12,8 @@ const router = Router();
 
 router.get(
     '/user/:steamId/app/:appId/stat/:stat',
+
+    authorizationMiddleware,
     [
         param('steamId')
             .isInt({ min: 0 }).withMessage('invalid steamId format'),
@@ -20,7 +22,7 @@ router.get(
         param('stat')
             .isString(),
     ],
-    validator,
+    validationMiddleware,
 
     async (req, res, next) => {
         const { steamId, appId } = req.matchedData;
@@ -50,6 +52,8 @@ router.get(
 
 router.get(
     '/user/:steamId/app/:appId/playtime',
+
+    authorizationMiddleware,
     [
         param('steamId')
             .isInt({ min: 0 }).withMessage('invalid steamId format'),
@@ -60,7 +64,7 @@ router.get(
         query('minutes')
             .isInt({ min: 0, max: 1 }).optional().withMessage('invalid minutes format'),
     ],
-    validator,
+    validationMiddleware,
 
     async (req, res, next) => {
         const { steamId, appId } = req.matchedData;

@@ -3,6 +3,7 @@ import 'dotenv/config';
 import axios from 'axios';
 
 import app from './app.js';
+import './authorization.js';
 
 const { PORT } = process.env;
 
