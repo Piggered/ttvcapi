@@ -22,6 +22,10 @@ app.use((req, res, next) => {
 const routesDir = path.join(__dirname, 'routes');
 const routeFiles = recursiveReaddirSync(routesDir).filter(file => file.endsWith('.route.js'));
 
+app.get('/', (req, res) => {
+    res.redirect('https://github.com/Piggered/ttvcapi');
+});
+
 // do NOT use async forEach, otherwise it'll mess up the order of middlewares due to awaiting for dynamic imports
 for (const file of routeFiles) {
     const { default: router } = await import(file);
