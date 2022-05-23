@@ -73,8 +73,6 @@ router.get(
         query('recent')
             .default(0).isInt({ min: 0, max: 1 }).toBoolean()
             .withMessage('invalid recent format'),
-        query('locale')
-            .optional().isString(),
     ],
     validationMiddleware,
 
