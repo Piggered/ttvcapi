@@ -25,7 +25,11 @@ router.get(
     validationMiddleware,
 
     async (req, res, next) => {
-        const { steamId, appId } = req.matchedData;
+        const {
+            steamId,
+            appId,
+            stat: statName
+        } = req.matchedData;
 
         const request = await axios.get(`${STEAM_API_URL}/ISteamUserStats/GetUserStatsForGame/v2`, {
             params: {
@@ -39,8 +43,7 @@ router.get(
             return next(createError(400, 'Steam Web API responded with non 200 status code'));
         }
 
-        const stats = request.data.playerstats.stats;
-        const stat = stats.find(stat => stat.name === req.matchedData.stat);
+        const stat = request.data.playerstats.stats.find(stat => stat.name === statName);
 
         if (!stat) {
             return next(createError(404, 'stat not found'));
@@ -60,16 +63,25 @@ router.get(
         param('appId')
             .isInt({ min: 0 }).withMessage('invalid appId format'),
         query('round')
-            .isInt({ min: 0, max: 5 }).optional().withMessage('invalid round format'),
+            .default(0).isInt({ min: 0, max: 5 })
+            .withMessage('invalid round format'),
         query('minutes')
-            .isInt({ min: 0, max: 1 }).optional().withMessage('invalid minutes format'),
+            .default(0).isInt({ min: 0, max: 1 }).toBoolean()
+            .withMessage('invalid minutes format'),
         query('recent')
-            .isInt({ min: 0, max: 1 }).optional().withMessage('invalid recent format'),
+            .default(0).isInt({ min: 0, max: 1 }).toBoolean()
+            .withMessage('invalid recent format'),
     ],
     validationMiddleware,
 
     async (req, res, next) => {
-        const { steamId, appId, round, minutes, recent } = req.matchedData;
+        const {
+            steamId,
+            appId,
+            round,
+            minutes,
+            recent
+        } = req.matchedData;
 
         const request = await axios.get(`${STEAM_API_URL}/IPlayerService/GetOwnedGames/v1`, {
             params: {
@@ -90,10 +102,10 @@ router.get(
         }
 
         const game = request.data.response.games[0];
-        const rawPlaytime = recent === '1' ? game.playtime_2weeks : game.playtime_forever;
-        const playtime = minutes === '1' ? rawPlaytime : rawPlaytime / 60;
+        const rawPlaytime = recent ? game.playtime_2weeks : game.playtime_forever;
+        const playtime = minutes ? rawPlaytime : rawPlaytime / 60;
 
-        res.send(playtime.toFixed(round ?? 0));
+        res.send(playtime.toFixed(round));
     }
 );
 
