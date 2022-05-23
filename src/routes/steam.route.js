@@ -16,9 +16,11 @@ router.get(
     authorizationMiddleware,
     [
         param('steamId')
-            .isInt({ min: 0 }).withMessage('invalid steamId format'),
+            .isInt({ min: 0 })
+            .withMessage('invalid steamId format'),
         param('appId')
-            .isInt({ min: 0 }).withMessage('invalid appId format'),
+            .isInt({ min: 0 })
+            .withMessage('invalid appId format'),
         param('stat')
             .isString(),
     ],
@@ -71,6 +73,8 @@ router.get(
         query('recent')
             .default(0).isInt({ min: 0, max: 1 }).toBoolean()
             .withMessage('invalid recent format'),
+        query('locale')
+            .optional().isString(),
     ],
     validationMiddleware,
 
