@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Router } from 'express';
-import { matchedData, param, query } from 'express-validator';
+import { param, query } from 'express-validator';
 
 import { createError } from '#src/errors';
 import { authorizationMiddleware, validationMiddleware } from '#src/middlewares';
