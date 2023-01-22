@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Router } from 'express';
-import { param, query } from 'express-validator';
+import { matchedData, param, query } from 'express-validator';
 
 import { createError } from '#src/errors';
 import { authorizationMiddleware, validationMiddleware } from '#src/middlewares';
@@ -9,6 +9,31 @@ const { STEAM_API_KEY } = process.env;
 const STEAM_API_URL = 'https://api.steampowered.com';
 
 const router = Router();
+
+router.get(
+    '/personaname/:steamId',
+
+    authorizationMiddleware,
+    [
+        param('steamId')
+            .isInt({ min: 0 })
+            .withMessage('invalid steamId format'),
+    ],
+    validationMiddleware,
+
+    async (req, res, next) => {
+        const { steamId } = req.matchedData;
+
+        const request = await axios.get(`${STEAM_API_URL}/ISteamUser/GetPlayerSummaries/v2`, {
+            params: {
+                key: STEAM_API_KEY,
+                steamids: steamId
+            }
+        });
+
+        res.send(request.data.response.players[0].personaname);
+    }
+);
 
 router.get(
     '/stat/:steamId/:appId/:stat',
