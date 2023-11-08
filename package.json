@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon",
+    "start": "node ."
   },
   "repository": {
     "type": "git",
@@ -28,12 +28,12 @@
     "status-codes": "^0.0.1",
     "toml": "^3.0.0"
   },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
   "imports": {
     "#src/*": "./src/*.js",
     "#src": "./src/index.js",
     "#routes/*": "./routes/*.js"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
   }
 }
